@@ -1,0 +1,33 @@
+#!/bin/bash -x -e
+
+# docker image/type of database
+# Tested with mysql or mariadb
+DATABASE_TYPE="$1"
+DB_DOCKER_NAME="${DATABASE_TYPE}-${BAMBOO_BUILDNUMBER}"
+
+
+cleanup() {
+  DB_DOCKERS=$(docker ps -f "name=${DATABASE_TYPE}-" -q | xargs)
+  echo "Killing running docker containers: ${DB_DOCKERS}"
+  docker kill $DB_DOCKERS
+
+  OPENMRS_DOCKERS=$(docker ps -f "name=openmrs-${DATABASE_TYPE}-" -q  | xargs)
+  echo "Killing running docker containers: ${OPENMRS_DOCKERS}"
+  docker kill $OPENMRS_DOCKERS
+}
+
+start_db_docker() {
+  echo "Starting docker container named ${DB_DOCKER_NAME} of type ${DATABASE_TYPE}"
+  # create docker container for database
+  DB_DOCKER_PID=$(docker run --name "$DB_DOCKER_NAME" \
+  -e MYSQL_ROOT_PASSWORD=openmrs -e MYSQL_USER=test \
+  -e MYSQL_PASSWORD=test -e MYSQL_DATABASE=openmrs-${BAMBOO_BUILDNUMBER} -d ${DATABASE_TYPE})
+
+  sleep 20
+
+  docker logs ${DB_DOCKER_PID}
+}
+
+cleanup
+start_db_docker
+cleanup

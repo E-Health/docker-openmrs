@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+    <profiles>
+      <profile>
+          <id>defaultProfile</id>
+          <activation>
+              <activeByDefault>true</activeByDefault>
+          </activation>
+          <!-- Always retrieve latest snapshots and version range -->
+          <repositories>
+                <repository>
+                    <id>openmrs-repo</id>
+                    <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+                    <snapshots>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                        <checksumPolicy>warn</checksumPolicy>
+                    </snapshots>
+                    <releases>
+                        <enabled>true</enabled>
+                        <checksumPolicy>warn</checksumPolicy>
+                        <updatePolicy>always</updatePolicy>
+                    </releases>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>openmrs-repo</id>
+                    <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+                    <releases>
+                        <checksumPolicy>warn</checksumPolicy>
+                        <enabled>true</enabled>
+                        <updatePolicy>always</updatePolicy>
+                    </releases>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                </pluginRepository>
+            </pluginRepositories>
+      </profile>
+  </profiles>
+</settings>
