@@ -1,4 +1,6 @@
-#!/bin/bash -x -e
+#!/bin/bash -e
+
+set -x 
 
 # docker image/type of database
 # Tested with mysql or mariadb
@@ -20,7 +22,7 @@ cleanup() {
     docker kill $OPENMRS_DOCKERS
   fi
 }
-TRAP cleanup EXIT TERM
+trap cleanup EXIT TERM
 
 start_db_docker() {
   echo "Starting docker container named ${DB_DOCKER_NAME} of type ${DATABASE_TYPE}"
