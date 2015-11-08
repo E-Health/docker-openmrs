@@ -10,6 +10,7 @@ export DB_TYPE="$1"
 
 # Defining names and images for docker containers
 export DB_DOCKER_IMAGE="$DB_TYPE"
+export DB_DOCKER_VAR_PREFIX=$(tr [a-z] [A-Z] <<< "$DB_DOCKER_IMAGE")
 export DB_DOCKER_NAME="${DB_DOCKER_IMAGE}-${BAMBOO_BUILDNUMBER}"
 
 export OPENMRS_DOCKER_IMAGE="openmrs-${DB_TYPE}"
@@ -46,7 +47,7 @@ run_openmrs_docker_container() {
   DC_ID=$(docker run -d --name ${OPENMRS_DOCKER_NAME} \
   --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
   --publish-all=true \
-  -e DB_VARIABLE_PREFIX="$DB_DOCKER_IMAGE" \
+  -e DB_VARIABLE_PREFIX="$DB_DOCKER_VAR_PREFIX" \
   ${OPENMRS_DOCKER_IMAGE})
 
   sleep 20
