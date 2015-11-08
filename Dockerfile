@@ -2,10 +2,10 @@ FROM maven:3.2-jdk-6
 
 ADD settings.xml /root/.m2/
 
-CMD env
+export 8080
 
 CMD mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
--B -e -v \
+-B -e \
 -DserverId=${BAMBOO_BUILDNUMBER} \
 -Dversion=2.3 \
 -DdbDriver=mysql \

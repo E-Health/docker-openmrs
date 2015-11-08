@@ -43,7 +43,7 @@ run_openmrs_docker_container() {
 
   DC_ID=$(docker run -d --name ${OPENMRS_DOCKER_NAME} \
   --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
-  -p 8082:8082 \
+  -p 8080:8082 \
   ${OPENMRS_DOCKER_IMAGE})
 
   sleep 20
@@ -63,8 +63,6 @@ smoke_test_openmrs() {
   for COUNT in {1..5}
   do
     if ! wget --spider http://localhost:8082/openmrs; then
-      echo "------------"
-      docker logs ${DC_ID}
       docker ps
       echo "Sleeping 10 seconds"
       sleep 10
@@ -73,7 +71,8 @@ smoke_test_openmrs() {
       return
     fi
   done
-
+  echo "------------"
+  docker logs ${DC_ID}
 }
 
 cleanup
