@@ -28,10 +28,12 @@ cleanup() {
   fi
 
   echo "Removing stopped containers"
-  docker rm $(docker ps -a --filter status=exit -q)
+  EXITED_CONTAINERS=$(docker ps -a --filter status=exit -q)
+  if [ -n "$EXITED_CONTAINERS" ]; then
+    docker rm "$EXITED_CONTAINERS"
+  fi
   echo "Cleanup finished"
 }
-trap cleanup EXIT TERM
 
 start_db_docker() {
   echo "Starting docker container named ${DB_DOCKER_NAME} of image ${DB_DOCKER_IMAGE}"
@@ -58,7 +60,7 @@ run_openmrs_docker_container() {
   echo "Starting docker container named ${OPENMRS_DOCKER_NAME} of image ${OPENMRS_DOCKER_IMAGE}"
 
   DC_ID=$(docker run -d --name ${OPENMRS_DOCKER_NAME} \
-  --link ${DB_DOCKER_IMAGE}:${DB_DOCKER_IMAGE} \
+  --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
   -p 8082:8082 \
   ${OPENMRS_DOCKER_IMAGE})
 
