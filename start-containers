@@ -1,23 +1,25 @@
 #!/bin/bash -e
 
 ## USAGE: ./run-openmrs-docker "<mariadb/mysql>"
-
-set -x
 source common.sh
+set -x
 
 # docker image/type of database
 # Tested with mysql and mariadb
-export DB_DATABASE_TYPE="$1"
+export DB_TYPE="$1"
 
-export DB_DOCKER_IMAGE="$DB_DATABASE_TYPE"
+# Defining names and images for docker containers
+export DB_DOCKER_IMAGE="$DB_TYPE"
 export DB_DOCKER_NAME="${DB_DOCKER_IMAGE}-${BAMBOO_BUILDNUMBER}"
 
-export OPENMRS_DOCKER_IMAGE="openmrs-${DB_DATABASE_TYPE}"
+export OPENMRS_DOCKER_IMAGE="openmrs-${DB_TYPE}"
 export OPENMRS_DOCKER_NAME="${OPENMRS_DOCKER_IMAGE}-${BAMBOO_BUILDNUMBER}"
 
+# Passing debug flags if set
 export SHELLOPTS
 
-start_db_docker() {
+
+run_db_docker_container() {
   echo "Starting docker container named ${DB_DOCKER_NAME} of image ${DB_DOCKER_IMAGE}"
   # create docker container for database
   DB_DOCKER_PID=$(docker run --name "$DB_DOCKER_NAME" \
@@ -26,7 +28,7 @@ start_db_docker() {
 
   sleep 15
   echo "------------"
-  docker logs ${DB_DOCKER_PID}
+  docker logs ${DB_DOCKER_PID} | tail
   echo "------------"
 
   echo "${DB_DOCKER_NAME} docker container should now be up and running"
@@ -41,20 +43,19 @@ build_openmrs_docker_image() {
 run_openmrs_docker_container() {
   echo "Starting docker container named ${OPENMRS_DOCKER_NAME} of image ${OPENMRS_DOCKER_IMAGE}"
 
-  DATABASE_URL=$(eval "echo \$${DATABASE_TYPE}_PORT" | sed "s|tcp://||")
-
   DC_ID=$(docker run -d --name ${OPENMRS_DOCKER_NAME} \
   --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
-  --publish-all=true ${OPENMRS_DOCKER_IMAGE} \
-  -e DATABASE_URL="$DATABASE_URL")
+  --publish-all=true \
+  -e DB_VARIABLE_PREFIX="$DB_DOCKER_IMAGE" \
+  ${OPENMRS_DOCKER_IMAGE})
 
   sleep 20
 
   echo "------------"
   docker logs ${DC_ID}
   echo "------------"
-  docker info
   docker ps
+  docker inspect ${DC_ID}
   echo "------------"
 
   echo "${OPENMRS_DOCKER_NAME} docker container should now be up and running"
@@ -64,7 +65,7 @@ run_openmrs_docker_container() {
 smoke_test_openmrs() {
   for COUNT in {1..5}
   do
-    if ! wget --spider http://localhost:8082/openmrs; then
+    if ! wget --spider http://localhost:8080/openmrs; then
       docker ps
       echo "Sleeping 10 seconds"
       sleep 10
@@ -77,11 +78,17 @@ smoke_test_openmrs() {
   docker logs ${DC_ID}
 }
 
+if [ "$#" != "1" ] || ([ "$1" != "mariadb" ] && [ "$1" != "mysql" ]); then
+  >&2 echo "Usage: ./run-openmrs-docker <mariadb|mysql>"
+  exit 1
+fi
+
+
 cleanup
-start_db_docker
+run_db_docker_container
 build_openmrs_docker_image
 run_openmrs_docker_container
-smoke_test_openmrs
+#smoke_test_openmrs
 exit 0
 
 

@@ -3,6 +3,14 @@
 set -x
 
 env
+if [ -z "$DB_VARIABLE_PREFIX" ]; then
+  >&2 echo "DB_VARIABLE_PREFIX cannot be empty."
+  exit 1
+fi
+
+DATABASE_URL=$(eval "echo \$${DB_VARIABLE_PREFIX}_PORT" | sed "s|tcp://||")
+
+echo "DATABASE_URL=$DATABASE_URL"
 
 mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
 -B -e \
