@@ -7,16 +7,22 @@ if [ -z "$DB_VARIABLE_PREFIX" ]; then
   exit 1
 fi
 
+if [ -z "$BUILDNUMBER" ]; then
+  >&2 echo "BUILDNUMBER cannot be empty."
+  exit 1
+fi
+
+
 DATABASE_HOST=$(eval "echo \$${DB_VARIABLE_PREFIX}_PORT" | sed "s|tcp://||")
 
 echo "DATABASE_URL=$DATABASE_URL"
 
 mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
 -B -e \
--DserverId=${BAMBOO_BUILDNUMBER} \
+-DserverId=${BUILDNUMBER} \
 -Dversion=2.3 \
 -DdbDriver=mysql \
--DdbUri=jdbc:mysql://${DATABASE_HOST}/openmrs-${BAMBOO_BUILDNUMBER} \
+-DdbUri=jdbc:mysql://${DATABASE_HOST}/openmrs-${BUILDNUMBER} \
 -DdbUser=test \
 -DdbPassword=test
 
@@ -24,4 +30,4 @@ mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
 mvn \
 org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:run \
 -B -e \
--DserverId=${BAMBOO_BUILDNUMBER}
+-DserverId=${BUILDNUMBER}

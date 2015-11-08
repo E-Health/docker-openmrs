@@ -47,6 +47,7 @@ run_openmrs_docker_container() {
   --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
   --publish-all=true \
   -e DB_VARIABLE_PREFIX="$DB_DOCKER_VAR_PREFIX" \
+  -e BUILDNUMBER="$BAMBOO_BUILDNUMBER" \
   ${OPENMRS_DOCKER_IMAGE})
 
   sleep 20
