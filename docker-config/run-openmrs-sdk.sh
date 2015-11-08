@@ -15,7 +15,7 @@ fi
 
 DATABASE_HOST=$(eval "echo \$${DB_VARIABLE_PREFIX}_PORT" | sed "s|tcp://||")
 
-echo "DATABASE_URL=$DATABASE_URL"
+echo "DATABASE_HOST=$DATABASE_HOST"
 
 mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
 -B -e \

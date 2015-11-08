@@ -28,10 +28,10 @@ run_db_docker_container() {
 
   sleep 15
   echo "------------"
-  docker logs ${DB_DOCKER_PID} | tail
+  docker logs --tail=15 ${DB_DOCKER_PID}
   echo "------------"
 
-  echo "${DB_DOCKER_NAME} docker container should now be up and running"
+  echo "${DB_DOCKER_NAME} docker container should now be up and running ($DB_DOCKER_PID)"
 }
 
 build_openmrs_docker_image() {
@@ -50,16 +50,16 @@ run_openmrs_docker_container() {
   -e BUILDNUMBER="$BAMBOO_BUILDNUMBER" \
   ${OPENMRS_DOCKER_IMAGE})
 
-  sleep 20
+  sleep 30
 
   echo "------------"
-  docker logs ${DC_ID}
+  docker logs --tail=30 ${DC_ID}
   echo "------------"
-  docker ps
   docker inspect ${DC_ID}
+  docker ps
   echo "------------"
 
-  echo "${OPENMRS_DOCKER_NAME} docker container should now be up and running"
+  echo "${OPENMRS_DOCKER_NAME} docker container should now be up and running ($DC_ID)"
 
 }
 
