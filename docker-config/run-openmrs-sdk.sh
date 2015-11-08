@@ -17,7 +17,7 @@ DATABASE_HOST=$(eval "echo \$${DB_VARIABLE_PREFIX}_PORT" | sed "s|tcp://||")
 
 echo "DATABASE_HOST=$DATABASE_HOST"
 
-mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
+mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0.3:setup \
 -B -e \
 -DserverId=${BUILDNUMBER} \
 -Dversion=2.3 \
@@ -27,7 +27,9 @@ mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:setup \
 -DdbPassword=test
 
 
+sleep 50000
+
 mvn \
-org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0:run \
+org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0.3:run \
 -B -e \
 -DserverId=${BUILDNUMBER}
