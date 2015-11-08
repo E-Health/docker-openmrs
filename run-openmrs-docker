@@ -43,8 +43,7 @@ run_openmrs_docker_container() {
 
   DC_ID=$(docker run -d --name ${OPENMRS_DOCKER_NAME} \
   --link ${DB_DOCKER_NAME}:${DB_DOCKER_IMAGE} \
-  -p 8080:8082 \
-  ${OPENMRS_DOCKER_IMAGE})
+  --publish-all=true ${OPENMRS_DOCKER_IMAGE})
 
   sleep 20
 
