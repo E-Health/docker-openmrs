@@ -1,41 +1,61 @@
 #!/bin/bash -e
 
-set -x 
+set -x
 
 # docker image/type of database
 # Tested with mysql or mariadb
-DATABASE_TYPE="$1"
-DB_DOCKER_NAME="${DATABASE_TYPE}-${BAMBOO_BUILDNUMBER}"
+export DB_DATABASE_TYPE="$1"
+
+export DB_DOCKER_IMAGE="$DB_DATABASE_TYPE"
+export DB_DOCKER_NAME="${DB_DOCKER_IMAGE}-${BAMBOO_BUILDNUMBER}"
+
+export OPENMRS_DOCKER_IMAGE="openmrs-${DB_DATABASE_TYPE}"
+export OPENMRS_DOCKER_NAME="${OPENMRS_DOCKER_IMAGE}-${BAMBOO_BUILDNUMBER}"
 
 
 cleanup() {
   echo "Cleaning up running docker containers"
-  DB_DOCKERS=$(docker ps -f "name=${DATABASE_TYPE}-" -q | xargs)
+  DB_DOCKERS=$(docker ps -f "name=${DB_DOCKER_IMAGE}-" -q | xargs)
   if [ -n "$DB_DOCKERS" ]; then
     echo "Killing running docker containers: ${DB_DOCKERS}"
     docker kill $DB_DOCKERS
   fi
 
-  OPENMRS_DOCKERS=$(docker ps -f "name=openmrs-${DATABASE_TYPE}-" -q  | xargs)
+  OPENMRS_DOCKERS=$(docker ps -f "name=${OPENMRS_DOCKER_IMAGE}-" -q  | xargs)
   if [ -n "$OPENMRS_DOCKERS" ]; then
     echo "Killing running docker containers: ${OPENMRS_DOCKERS}"
     docker kill $OPENMRS_DOCKERS
   fi
+
+  echo "Removing stopped containers"
+  docker rm $(docker ps -a --filter status=exit -q)
+  echo "Cleanup finished"
 }
 trap cleanup EXIT TERM
 
 start_db_docker() {
-  echo "Starting docker container named ${DB_DOCKER_NAME} of type ${DATABASE_TYPE}"
+  echo "Starting docker container named ${DB_DOCKER_NAME} of image ${DB_DOCKER_IMAGE}"
   # create docker container for database
   DB_DOCKER_PID=$(docker run --name "$DB_DOCKER_NAME" \
   -e MYSQL_ROOT_PASSWORD=openmrs -e MYSQL_USER=test \
-  -e MYSQL_PASSWORD=test -e MYSQL_DATABASE=openmrs-${BAMBOO_BUILDNUMBER} -d ${DATABASE_TYPE})
+  -e MYSQL_PASSWORD=test -e MYSQL_DATABASE=openmrs-${BAMBOO_BUILDNUMBER} -d ${DB_DOCKER_IMAGE})
 
   sleep 20
 
+  echo "------------"
   docker logs ${DB_DOCKER_PID}
+  echo "------------"
+
+  echo "DB docker container should now be up and running"
+}
+
+build_openmrs_docker_image() {
+  echo "Building the openmrs docker image"
+  docker build --rm=true -t ${OPENMRS_DOCKER_IMAGE}:latest .
+  echo "${OPENMRS_DOCKER_IMAGE} image built"
 }
 
 cleanup
 start_db_docker
+build_openmrs_docker_image
 exit 0
