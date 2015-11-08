@@ -17,7 +17,7 @@ cleanup() {
   echo "Removing stopped containers"
   EXITED_CONTAINERS=$(docker ps -a --filter status=exit -q | xargs)
   if [ -n "$EXITED_CONTAINERS" ]; then
-    docker rm "$EXITED_CONTAINERS"
+    docker rm $EXITED_CONTAINERS
   fi
   echo "Cleanup finished"
 }
