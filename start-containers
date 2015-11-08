@@ -2,7 +2,6 @@
 
 ## USAGE: ./run-openmrs-docker "<mariadb/mysql>"
 source common.sh
-set -x
 
 # docker image/type of database
 # Tested with mysql and mariadb
