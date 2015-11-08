@@ -23,8 +23,8 @@ mvn org.openmrs.maven.plugins:openmrs-sdk-maven-plugin:2.0.3:setup \
 -Dversion=2.3 \
 -DdbDriver=mysql \
 -DdbUri=jdbc:mysql://${DATABASE_HOST}/openmrs-${BUILDNUMBER} \
--DdbUser=test \
--DdbPassword=test
+-DdbUser=root \
+-DdbPassword=openmrs
 
 
 sleep 50000
