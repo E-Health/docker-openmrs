@@ -5,4 +5,4 @@ COPY run-openmrs-sdk.sh .
 
 EXPOSE 8080
 
-CMD run-openmrs-sdk.sh
+CMD ./run-openmrs-sdk.sh
