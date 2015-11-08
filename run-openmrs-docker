@@ -7,14 +7,20 @@ DB_DOCKER_NAME="${DATABASE_TYPE}-${BAMBOO_BUILDNUMBER}"
 
 
 cleanup() {
+  echo "Cleaning up running docker containers"
   DB_DOCKERS=$(docker ps -f "name=${DATABASE_TYPE}-" -q | xargs)
-  echo "Killing running docker containers: ${DB_DOCKERS}"
-  docker kill $DB_DOCKERS
+  if [ -n "$DB_DOCKERS" ]; then
+    echo "Killing running docker containers: ${DB_DOCKERS}"
+    docker kill $DB_DOCKERS
+  fi
 
   OPENMRS_DOCKERS=$(docker ps -f "name=openmrs-${DATABASE_TYPE}-" -q  | xargs)
-  echo "Killing running docker containers: ${OPENMRS_DOCKERS}"
-  docker kill $OPENMRS_DOCKERS
+  if [ -n "$OPENMRS_DOCKERS" ]; then
+    echo "Killing running docker containers: ${OPENMRS_DOCKERS}"
+    docker kill $OPENMRS_DOCKERS
+  fi
 }
+TRAP cleanup EXIT TERM
 
 start_db_docker() {
   echo "Starting docker container named ${DB_DOCKER_NAME} of type ${DATABASE_TYPE}"
@@ -30,4 +36,4 @@ start_db_docker() {
 
 cleanup
 start_db_docker
-cleanup
+exit 0
