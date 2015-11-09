@@ -84,6 +84,10 @@ if [ "$#" != "1" ] || ([ "$1" != "mariadb" ] && [ "$1" != "mysql" ]); then
   exit 1
 fi
 
+if [ -z "$BAMBOO_BUILDNUMBER" ]; then
+  >&2 echo "BAMBOO_BUILDNUMBER cannot be empty."
+  exit 1
+fi
 
 cleanup
 run_db_docker_container
