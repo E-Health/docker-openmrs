@@ -1,0 +1,21 @@
+version: "2"
+services:
+  database:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: openmrs
+      MYSQL_DATABASE: openmrs
+      MYSQL_USER: openmrs
+      MYSQL_PASSWORD: openmrs
+  openmrs:
+    depends_on:
+      - database
+    build: openmrs-docker
+    ports:
+      - "8080:8080"
+    environment:
+      DB_USERNAME: openmrs
+      DB_PASSWORD: openmrs
+      DB_DATABASE: openmrs
+      DB_HOST: database
