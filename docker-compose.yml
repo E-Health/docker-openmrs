@@ -20,3 +20,4 @@ services:
       DB_PASSWORD: openmrs
       DB_DATABASE: openmrs
       DB_HOST: database
+      IMPORT_DB_DUMP: "true" 
