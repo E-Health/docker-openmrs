@@ -31,7 +31,11 @@ $ docker-compose down
 ## Demo data
 If you change _IMPORT_DB_DUMP_ in `docker-compose.yml` to false, database will remain empty,
 and wizard will show up.
+
 The current dump was take with `mysqldump` after running the wizard manually.
+  - Choose advanced module
+  - Add database host, username and password
+  - Create tables and demo data
 
 
 ## Other similar docker images and relevant links
