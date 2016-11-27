@@ -12,6 +12,8 @@ EXPOSE 8080
 
 RUN apt-get update && apt-get install -y mysql-client
 
+RUN rm -rf /usr/local/tomcat/webapps/*
+
 # Download platform
 RUN curl -L ${PLATFORM_URL} -o /usr/local/tomcat/webapps/openmrs.war
 
