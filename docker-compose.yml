@@ -5,10 +5,10 @@ services:
     command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: openmrs
+      MYSQL_ROOT_PASSWORD: s0m3th1ng
       MYSQL_DATABASE: openmrs
       MYSQL_USER: openmrs
-      MYSQL_PASSWORD: openmrs
+      MYSQL_PASSWORD: 0p3nmrs
   openmrs:
     depends_on:
       - database
@@ -16,8 +16,8 @@ services:
     ports:
       - "8080:8080"
     environment:
-      DB_USERNAME: openmrs
-      DB_PASSWORD: openmrs
       DB_DATABASE: openmrs
       DB_HOST: database
+      DB_USERNAME: openmrs
+      DB_PASSWORD: 0p3nmrs
       IMPORT_DB_DUMP: "true"
