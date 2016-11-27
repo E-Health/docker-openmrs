@@ -1,5 +1,6 @@
 ## Description
 Run openmrs and mysql as disposable docker containers.
+Includes demo data out of the box too.
 
 ## Requirements
   - Docker engine
@@ -36,6 +37,8 @@ The current dump was take with `mysqldump` after running the wizard manually.
   - Choose advanced module
   - Add database host, username and password
   - Create tables and demo data
+  - `docker exec -it <container_db_id> bash` followed by `mysqldump --user=openmrs --password=openmrs openmrs > /tmp/dump.sql`.
+  Use `docker cp <container_db_id>:/tmp/dump.sql .` to copy it to your machine. 
 
 
 ## Other similar docker images and relevant links
