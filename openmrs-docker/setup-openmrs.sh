@@ -10,7 +10,6 @@ if [ "${IMPORT_DB_DUMP}" == "true" ]; then
   echo "Done... "
 
   echo "Writing configuration file:"
-
   cat > /root/.OpenMRS/openmrs-runtime.properties << EOF
 # Created from Docker setup script
 #encryption.vector=X87Os8fUcYjR4jlQK09MXQ\=\=
@@ -21,9 +20,23 @@ connection.username=${DB_USERNAME}
 auto_update_database=true
 connection.password=${DB_PASSWORD}
 EOF
-
   cat /root/.OpenMRS/openmrs-runtime.properties
 
+else
+  cat > /root/installation.properties << EOF
+# Created from Docker setup script
+install_method=auto
+connection.url=jdbc\:mysql\://${DB_HOST}\:3306/${DB_DATABASE}?autoReconnect\=true&sessionVariables\=default_storage_engine\=InnoDB&useUnicode\=true&characterEncoding\=UTF-8
+connection.username=${DB_USERNAME}
+connection.password=${DB_PASSWORD}
+has_current_openmrs_database=true
+create_tables=true
+create_database_user=false
+add_demo_data=true
+module_web_admin=true
+auto_update_database=true
+EOF
+  export CATALINA_OPTS="-DOPENMRS_INSTALLATION_SCRIPT=/root/installation.properties"
 fi
 
 echo "Running tomcat"

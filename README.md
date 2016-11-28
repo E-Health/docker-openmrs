@@ -30,15 +30,13 @@ $ docker-compose down
 ```
 
 ## Demo data
-If you change _IMPORT_DB_DUMP_ in `docker-compose.yml` to false, database will remain empty,
-and wizard will show up.
+If you change _IMPORT_DB_DUMP_ in `docker-compose.yml` to false, installation will run
+and create tables and demo data.
 
-The current dump was take with `mysqldump` after running the wizard manually.
-  - Choose advanced module
-  - Add database host, username and password
-  - Create tables and demo data
-  - `docker exec -it <container_db_id> bash` followed by `mysqldump --user=openmrs --password=openmrs openmrs > /tmp/dump.sql`.
-  Use `docker cp <container_db_id>:/tmp/dump.sql .` to copy it to your machine. 
+The current dump was take with `mysqldump`:
+  - `docker exec -it <container_db_id> bash`
+  - `mysqldump --user=openmrs --password=openmrs openmrs > /tmp/dump.sql`
+  - `docker cp <container_db_id>:/tmp/dump.sql .` to copy it to your machine
 
 
 ## Other similar docker images and relevant links
