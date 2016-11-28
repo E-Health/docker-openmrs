@@ -1,5 +1,5 @@
 ## Description
-Run openmrs and mysql as disposable docker containers.
+Run openmrs (reference application) and mysql as disposable docker containers.
 Includes demo data out of the box too.
 
 ## Requirements
