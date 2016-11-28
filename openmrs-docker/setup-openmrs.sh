@@ -6,10 +6,12 @@ sleep 15
 
 if [ "${IMPORT_DB_DUMP}" == "true" ]; then
   echo "Starting import of demo data. "
-  mysql --user=${DB_USERNAME} --password=${DB_PASSWORD} --host=${DB_HOST} ${DB_DATABASE} < /root/demo-refapp*.sql
+  mysql --user=${DB_USERNAME} --password=${DB_PASSWORD} --host=${DB_HOST} ${DB_DATABASE} < /root/demo-*.sql
   echo "Done... "
 
   echo "Writing configuration file:"
+
+  mkdir -p /root/.OpenMRS/
 
   cat > /root/.OpenMRS/openmrs-runtime.properties << EOF
 # Created from Docker setup script
@@ -23,8 +25,8 @@ connection.password=${DB_PASSWORD}
 EOF
 
   cat /root/.OpenMRS/openmrs-runtime.properties
-
 fi
+
 
 echo "Running tomcat"
 catalina.sh "run"

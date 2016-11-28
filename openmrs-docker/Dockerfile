@@ -5,9 +5,6 @@ MAINTAINER cintia@openmrs.org
 ENV VERSION_PLATFORM 2.0.1
 ENV PLATFORM_URL http://sourceforge.net/projects/openmrs/files/releases/OpenMRS_Platform_${VERSION_PLATFORM}/openmrs.war/download
 
-ENV VERSION_REFAPP 2.5
-ENV REFAPP_URL https://sourceforge.net/projects/openmrs/files/releases/OpenMRS_${VERSION_REFAPP}/openmrs-${VERSION_REFAPP}-modules.zip/download
-
 EXPOSE 8080
 
 RUN apt-get update && apt-get install -y mysql-client
@@ -17,13 +14,8 @@ RUN rm -rf /usr/local/tomcat/webapps/*
 # Download platform
 RUN curl -L ${PLATFORM_URL} -o /usr/local/tomcat/webapps/openmrs.war
 
-# Download modules
-RUN mkdir -p /root/.OpenMRS/modules && \
-    curl -L ${REFAPP_URL} -o /tmp/openmrs-refapp-modules.zip && \
-    cd /tmp && unzip openmrs-refapp-modules.zip && \
-    mv *.omod /root/.OpenMRS/modules/
-
-COPY demo-refapp-${VERSION_REFAPP}.sql /root
+COPY demo-${VERSION_PLATFORM}.sql.zip /root
+RUN cd /root && unzip demo-${VERSION_PLATFORM}.sql.zip && rm demo-${VERSION_PLATFORM}.sql.zip
 COPY setup-openmrs.sh /root
 RUN chmod a+x /root/setup-openmrs.sh
 
